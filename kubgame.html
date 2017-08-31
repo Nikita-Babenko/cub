@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+
+<body style="background-color:black;">
+<canvas id="canvasID" width="500" height="500" style="background-color:white"></canvas>
+
+<script>
+
+    var can = document.getElementById("canvasID");
+    var ctx = can.getContext("2d");
+    var mouseX=0,mouseY=0;
+    var ochki=0;
+    var timer=61;
+    var c;
+    var mouseClick =false;
+
+    function clearCan(){
+        can.width = 500;
+        can.height = 500;
+    }
+
+    can.onmousemove = function(evt){
+        mouseX = evt.pageX - can.offsetTop;
+        mouseX = evt.pageY - can.offsetLeft;
+    }
+
+    var mishen = {
+        x:  100,
+        y:  100,
+        fS: 'rgba(0,255,0,0.5)',
+
+        draw: function(){
+            ctx.beginPath();
+            ctx.fillStyle = this.fS;
+            ctx.rect(this.x,this.y,20,20);
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+        }
+    }
+
+    var cursor = {
+        x: 100,
+        y: 100,
+        fS:'rgba(255,0,0,0.5)',
+
+        draw:function(){
+            ctx.beginPath();
+            ctx.fillStyle = this.fS;
+            ctx.rect(this.x,this.y,10,10);
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+
+        }
+    }
+
+    function pifagor(a,b){
+        c = (a*a)+(b*b);
+        c =  Math.sqrt(c);
+    }
+
+    function randomInt(max,min){
+        return Math.floor(Math.random()*(max-min+1))+min;
+    }
+
+    function drawText(value,x,y){
+        ctx.beginPath();
+        ctx.font='20px Arial';
+        ctx.strokeText(value,x,y);
+        ctx.closePath();
+    }
+
+    can.onmousedown=function(){
+        mouseClick=true;
+    }
+
+    can.onmouseup=function(){
+        mouseClick=false;
+    }
+
+    //60 cek
+    var runningInterval = setInterval(function(){
+        clearCan();
+
+        pifagor(mouseX-mishen.x,mouseY-mishen.y);
+        if(c<=20){
+            mishen.fS = 'rgba(255,0,0,0.5)';
+            if(mouseClick){
+                ochki = ochki+1;
+                mishen.x = randomInt(20,480);
+                mishen.y = randomInt(20,480);
+                mouseClick=false;
+            }
+        }
+        else {
+            mishen.fS = 'rgba(0,255,0,0.5)';
+            if(mouseClick){
+                ochki= ochki+1;
+                mishen.x = randomInt(20,480);
+                mishen.y = randomInt(20,480);
+                mouseClick=false;
+            }
+
+        }
+        mishen.draw();
+
+        //ochki
+        drawText(ochki,5,20);
+
+        // timer
+        drawText(timer,200,20);
+
+        //cursor
+        cursor.x = mouseX;
+        cursor.y = mouseY;
+        cursor.draw();
+        console.log(c);
+    },5);
+
+    //60 cek
+    var timerInterval = setInterval(function () {
+        //timer
+        timer--;
+
+        if (timer == 0) {
+            endGame();
+        }
+    }, 1000);
+
+    function winGame(){
+        drawText('win',250,250);
+    }
+
+    function endGame(){
+        drawText('end',250,250);
+        clearInterval(runningInterval);
+        clearInterval(timerInterval);
+    }
+
+</script>
+</body>
+
+
+</html>
